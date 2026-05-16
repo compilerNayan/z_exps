@@ -4,15 +4,17 @@
 #include "wifi/IHotspotManager.h"
 #include "FileManagerTests.h"
 #include "MkdirTests.h"
+#include "ThreadPoolTests.h"
 
 /* @Autowired */
 IHotspotManagerPtr hotspotManager = Implementation<IHotspotManager>::type::GetInstance();
 
 extern "C" void app_main(void) {
     printf("Starting FileManagerTests\n");
-    RunFileManagerTests();
+    RunThreadPoolTests();
+    //RunFileManagerTests();
     //TestMkdirAndList();
-    TestFlatVsNestedAndLength();
+    //TestFlatVsNestedAndLength();
  /*   ESP_LOGI("HotspotMain", "Starting hotspot demo");
 
     CStdString ssid = "Tiger";
