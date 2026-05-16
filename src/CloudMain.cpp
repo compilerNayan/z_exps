@@ -31,7 +31,7 @@ extern "C" void app_main(void) {
     // Main loop
     while (server.IsRunning()) {
         // Poll for messages on default topic (or any subscribed topic)
-        auto msgOpt = server.ReceiveMessage(std::nullopt);
+        auto msgOpt = server.ReceiveMessage(Optional<StdString>{"nknk32/sub"});
         if (msgOpt.has_value()) {
             IoTMessage msg = msgOpt.value();
             printf("[INFO] Received message: GUID=%s, Payload=%s\n",
@@ -45,7 +45,7 @@ extern "C" void app_main(void) {
             response.payload = body;
 
             // Publish response back to same topic
-            if (!server.SendMessage(response, Optional<StdString>{"sdsds"})) {
+            if (!server.SendMessage(response, Optional<StdString>{"nknk32/pub"})) {
                 printf("[ERROR] Failed to send response for GUID=%s\n", msg.guid.c_str());
             } else {
                 printf("[INFO] Sent response for GUID=%s\n", msg.guid.c_str());
