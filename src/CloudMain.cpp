@@ -45,7 +45,7 @@ extern "C" void app_main(void) {
             response.payload = body;
 
             // Publish response back to same topic
-            if (!server.SendMessage(response, msg.address)) {
+            if (!server.SendMessage(response, Optional<StdString>{"sdsds"})) {
                 printf("[ERROR] Failed to send response for GUID=%s\n", msg.guid.c_str());
             } else {
                 printf("[INFO] Sent response for GUID=%s\n", msg.guid.c_str());
