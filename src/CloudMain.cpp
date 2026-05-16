@@ -22,7 +22,7 @@ extern "C" void app_main(void) {
     // Start AWS IoT Core server
     EspidfAwsIotCoreServer server;
     if (!server.Start()) {
-        printf("[ERROR] AWS IoT Core server failed to start\n");
+        printf("[ERROR] AWS IeoT Core server failed to start\n");
         return;
     }
 
