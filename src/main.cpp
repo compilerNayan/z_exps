@@ -1,3 +1,4 @@
+#ifdef XXXEE
 #include <cstdio>
 #include "esp_log.h"
 
@@ -52,3 +53,5 @@ extern "C" void app_main(void) {
         vTaskDelay(pdMS_TO_TICKS(1000)); // wait 1 second
     } */
 }
+
+#endif
