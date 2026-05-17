@@ -1,8 +1,10 @@
+#define MEEEE
 #ifdef MEEEE
-#include "internal/05-server/03-variant/02-espidf/01-EspidfTcpServer.h"
 #include <thread>
 #include <chrono>
 #include <cstdio>
+
+#include "internal/05-server/02-interface/01-ITcpServer.h"
 
 #include "wifi/IWiFiManager.h"
 
@@ -10,7 +12,7 @@
 IWiFiManagerPtr wifiManager = Implementation<IWiFiManager>::type::GetInstance();
 
 extern "C" void app_main(void) {
-    if (!wifiManager->Connect("Garfield", Optional<StdString>{"123Madhu$$"})) {
+    if (!wifiManager->Connect("CMCC-Tomcat", Optional<StdString>{"123Milu$$"})) {
         printf("[ERROR] Failed to connect to WiFi\n");
         return;
     }
@@ -19,18 +21,19 @@ extern "C" void app_main(void) {
         return;
     }
 
-    EspidfTcpServer server;
-    if (!server.Start()) {
+    /*--@Autowired--*/
+    ITcpServerPtr server = Implementation<ITcpServer>::type::GetInstance();
+    if (!server->Start()) {
         printf("[ERROR] Server failed to start\n");
         return;
     }
 
     printf("[INFO] Server started, listening on port 8080\n");
 
-    while (server.IsRunning()) {
-        auto msgOpt = server.ReceiveMessage(std::nullopt);
+    while (server->IsRunning()) {
+        auto msgOpt = server->ReceiveMessage();
         if (msgOpt.has_value()) {
-            IoTMessage msg = msgOpt.value();
+            MqttMessage msg = msgOpt.value();
             printf("[INFO] Received message: GUID=%s, Payload=%s\n",
                    msg.guid.c_str(), msg.payload.c_str());
 
@@ -47,11 +50,11 @@ extern "C" void app_main(void) {
                      "%s",
                      body.size(), body.c_str());
 
-            IoTMessage response;
+            MqttMessage response;
             response.guid = msg.guid;
             response.payload = StdString(httpBuf);
 
-            if (!server.SendMessage(response, std::nullopt)) {
+            if (!server->SendMessage(response)) {
                 printf("[ERROR] Failedeh to send response for GUID=%s\n", msg.guid.c_str());
             } else {
                 printf("[INFO] Sent response for GUID=%s\n", msg.guid.c_str());
@@ -60,7 +63,7 @@ extern "C" void app_main(void) {
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
 
-    server.Stop();
+    server->Stop();
     printf("[INFO] Server stopped\n");
 }
 #endif

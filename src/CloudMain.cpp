@@ -1,3 +1,4 @@
+#ifdef LSKSHDHS
 #include "internal/05-server/02-interface/02-IMqttClient.h"
 #include <thread>
 #include <chrono>
@@ -8,8 +9,6 @@
 /*--@Autowired--*/
 IWiFiManagerPtr wifiManager = Implementation<IWiFiManager>::type::GetInstance();
 
-/*--@Autowired--*/
-IMMqttClientPtr mqttClient = Implementation<IMMqttClient>::type::GetInstance();
 
 
 extern "C" void app_main(void) {
@@ -22,6 +21,9 @@ extern "C" void app_main(void) {
         printf("[ERROR] WiFi connection failed\n");
         return;
     }
+
+    /*--@Autowired--*/
+    IMqttClientPtr mqttClient = Implementation<IMqttClient>::type::GetInstance();
 
     // Connect to MQTT broker
     if (!mqttClient->Connect()) {
@@ -63,3 +65,4 @@ extern "C" void app_main(void) {
     mqttClient->Disconnect();
     printf("[INFO] MQTT client disconnected\n");
 }
+#endif
