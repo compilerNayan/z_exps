@@ -12,7 +12,7 @@
 IWiFiManagerPtr wifiManager = Implementation<IWiFiManager>::type::GetInstance();
 
 extern "C" void app_main(void) {
-    if (!wifiManager->Connect("CMCC-Tomcat", Optional<StdString>{"123Milu$$"})) {
+    if (!wifiManager->Connect("Garfield", Optional<StdString>{"123Madhu$$"})) {
         printf("[ERROR] Failed to connect to WiFi\n");
         return;
     }
