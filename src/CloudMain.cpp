@@ -1,4 +1,4 @@
-#include "internal/05-server/03-variant/02-espidf/02-EspidfAwsIotCoreServer.h"
+#include "internal/05-server/02-interface/02-IMqttClient.h"
 #include <thread>
 #include <chrono>
 #include <cstdio>
@@ -7,6 +7,10 @@
 
 /*--@Autowired--*/
 IWiFiManagerPtr wifiManager = Implementation<IWiFiManager>::type::GetInstance();
+
+/*--@Autowired--*/
+IMMqttClientPtr mqttClient = Implementation<IMMqttClient>::type::GetInstance();
+
 
 extern "C" void app_main(void) {
     // Connect to WiFi
@@ -19,33 +23,34 @@ extern "C" void app_main(void) {
         return;
     }
 
-    // Start AWS IoT Core server
-    EspidfAwsIotCoreServer server;
-    if (!server.Start()) {
-        printf("[ERROR] AWS IeoT Core server failed to start\n");
+    // Connect to MQTT broker
+    if (!mqttClient->Connect()) {
+        printf("[ERROR] Failed to connect to MQTT broker\n");
+        return;
+    }
+    if (!mqttClient->WaitForConnection(10000) || !mqttClient->IsConnected()) {
+        printf("[ERROR] MQTT connection failed\n");
         return;
     }
 
-    printf("[INFO] AWS IoT Core server started\n");
-
     // Main loop
-    while (server.IsRunning()) {
+    while (mqttClient->IsConnected()) {
         // Poll for messages on default topic (or any subscribed topic)
-        auto msgOpt = server.ReceiveMessage(Optional<StdString>{"nknk32/sub"});
+        auto msgOpt = mqttClient->ReceiveMessage("nknk32/sub");
         if (msgOpt.has_value()) {
-            IoTMessage msg = msgOpt.value();
+            MqttMessage msg = msgOpt.value();
             printf("[INFO] Received message: GUID=%s, Payload=%s\n",
                    msg.guid.c_str(), msg.payload.c_str());
 
             // Build response payload
             StdString body = "Hello there " + msg.payload;
 
-            IoTMessage response;
+            MqttMessage response;
             response.guid = msg.guid;
             response.payload = body;
 
             // Publish response back to same topic
-            if (!server.SendMessage(response, Optional<StdString>{"nknk32/pub"})) {
+            if (!mqttClient->SendMessage("nknk32/pub", response)) {
                 printf("[ERROR] Failed to send response for GUID=%s\n", msg.guid.c_str());
             } else {
                 printf("[INFO] Sent response for GUID=%s\n", msg.guid.c_str());
@@ -55,6 +60,6 @@ extern "C" void app_main(void) {
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
 
-    server.Stop();
-    printf("[INFO] AWS IoT Core server stopped\n");
+    mqttClient->Disconnect();
+    printf("[INFO] MQTT client disconnected\n");
 }
