@@ -3,6 +3,7 @@
 
 #include "IHttpRequestManager.h"
 #include "wifi/IWiFiManager.h"
+#include "Thread.h"
 
 
 /*--@Autowired--*/
@@ -26,7 +27,8 @@ extern "C" void app_main(void) {
     printf("[INFO] Server started\n");
 
     while (true) {
-        //std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        requestManager->RetrieveRequest();
+        Thread::Sleep(1000);
     }
 
     requestManager->StopServer();
