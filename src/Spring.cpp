@@ -61,7 +61,6 @@ extern "C" void app_main(void) {
         Thread::Sleep(100);
     }
 
-    requestManager->StopServer();
 
     printf("[INFO] Server stopped\n");
 }
