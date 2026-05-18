@@ -54,13 +54,11 @@ extern "C" void app_main(void) {
     StartBackgroundThreads();
     Thread::Sleep(2000);
 
-    requestManager->StartServer();
-
-    printf("[INFO] Server started\n");
+    printf("[INFO] dsds started\n");
 
     while (true) {
-        requestManager->RetrieveRequest();
-        Thread::Sleep(1000);
+        requestManager->HandleRequest();
+        Thread::Sleep(100);
     }
 
     requestManager->StopServer();
