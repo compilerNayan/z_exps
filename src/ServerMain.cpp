@@ -1,4 +1,3 @@
-#define MEEEE
 #ifdef MEEEE
 #include <thread>
 #include <chrono>
