@@ -4,7 +4,7 @@
 #include <chrono>
 #include <cstdio>
 
-#include "HttpRequestDispatcher.h"
+#include "IHttpRequestDispatcher.h"
 
 #include "internal/05-server/02-interface/01-ITcpServer.h"
 
