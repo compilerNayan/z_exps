@@ -6,7 +6,7 @@
 #include "Thread.h"
 
 #include "logger/ILogger.h"
-#include "IThreadPool.h"
+#include "threading/IThreadPool.h"
 
 #include "threads/MqttClientThread.h"
 #include "threads/TcpServerThread.h"
@@ -29,16 +29,14 @@ Void StartBackgroundThreads() {
     IRunnablePtr mqttThread = std::make_shared<MqttClientThread>();
 
     // Submit to thread pool
-    Bool tcpOk = pool->Execute(tcpThread);
-    Bool mqttOk = pool->Execute(mqttThread);
+    Bool tcpOk = threadPool->Execute(tcpThread);
+    Bool mqttOk = threadPool->Execute(mqttThread);
 
-    if (logger) {
-        if (tcpOk) logger->Info(Tag::Untagged, "TcpServerThread submitted to pool");
-        else       logger->Error(Tag::Untagged, "Failed to submit TcpServerThread");
+    if (tcpOk) printf("[INFO] TcpServerTheeeread submitted to pool\n");
+    else       printf("[ERROR] Failede to submit TcpServerThread\n");
 
-        if (mqttOk) logger->Info(Tag::Untagged, "MqttClientThread submitted to pool");
-        else        logger->Error(Tag::Untagged, "Failed to submit MqttClientThread");
-    }
+    if (mqttOk) printf("[INFO] MqttClientThread submitted to pool\n");
+    else        printf("[ERROR] Failed to submit MqttClientThread\n");
 }
 
 
@@ -49,7 +47,7 @@ extern "C" void app_main(void) {
         return;
     }
     if (!wifiManager->WaitForConnection(10000) || !wifiManager->IsConnected()) {
-        printf("[ERROR] WiFi cesdonnection failed\n");
+        printf("[ERROR] WiFi kjdkja failed\n");
         return;
     }
 
