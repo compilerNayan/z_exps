@@ -5,12 +5,43 @@
 #include "wifi/IWiFiManager.h"
 #include "Thread.h"
 
+#include "logger/ILogger.h"
+#include "IThreadPool.h"
+
+#include "threads/MqttClientThread.h"
+#include "threads/TcpServerThread.h"
+
 
 /*--@Autowired--*/
 IWiFiManagerPtr wifiManager = Implementation<IWiFiManager>::type::GetInstance();
 
 /*--@Autowired--*/
 IHttpRequestManagerPtr requestManager = Implementation<IHttpRequestManager>::type::GetInstance();
+
+/*--@Autowired--*/
+IThreadPoolPtr threadPool = Implementation<IThreadPool>::type::GetInstance();
+
+
+Void StartBackgroundThreads() {
+
+    // Create runnable threads
+    IRunnablePtr tcpThread = std::make_shared<TcpServerThread>();
+    IRunnablePtr mqttThread = std::make_shared<MqttClientThread>();
+
+    // Submit to thread pool
+    Bool tcpOk = pool->Execute(tcpThread);
+    Bool mqttOk = pool->Execute(mqttThread);
+
+    if (logger) {
+        if (tcpOk) logger->Info(Tag::Untagged, "TcpServerThread submitted to pool");
+        else       logger->Error(Tag::Untagged, "Failed to submit TcpServerThread");
+
+        if (mqttOk) logger->Info(Tag::Untagged, "MqttClientThread submitted to pool");
+        else        logger->Error(Tag::Untagged, "Failed to submit MqttClientThread");
+    }
+}
+
+
 
 extern "C" void app_main(void) {
     if (!wifiManager->Connect("Garfield", Optional<StdString>{"123Madhu$$"})) {
@@ -21,6 +52,9 @@ extern "C" void app_main(void) {
         printf("[ERROR] WiFi cesdonnection failed\n");
         return;
     }
+
+    StartBackgroundThreads();
+    Thread::Sleep(2000);
 
     requestManager->StartServer();
 
