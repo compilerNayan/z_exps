@@ -8,9 +8,9 @@
 
 #include "WiFiHealthCheckerThread.h"
 #include "InternetHealthCheckerThread.h"
-/*#include "LocalServerThread.h"
-#include "CloudServerThread.h"
-#include "RequestManagerThread.h"*/
+#include "TcpServerThread.h"
+#include "MqttClientThread.h"
+#include "RequestManagerThread.h"
 
 
 /*--@Autowired--*/
@@ -24,17 +24,33 @@ Void StartBackgroundThreads() {
 
     IRunnablePtr internetHealthCheckerThread = std::make_shared<InternetHealthCheckerThread>();
 
+    IRunnablePtr tcpServerThread = std::make_shared<TcpServerThread>();
+    IRunnablePtr mqttClientThread = std::make_shared<MqttClientThread>();
+    IRunnablePtr requestManagerThread = std::make_shared<RequestManagerThread>();
+
     // Submit to thread pool
     Bool wifiHealthCheckerThreadOk = threadPool->Execute(wifiHealthCheckerThread);
     Bool internetHealthCheckerThreadOk = threadPool->Execute(internetHealthCheckerThread);
-
-
+    Bool tcpServerThreadOk = threadPool->Execute(tcpServerThread);
+    Bool mqttClientThreadOk = threadPool->Execute(mqttClientThread);
+    Bool requestManagerThreadOk = threadPool->Execute(requestManagerThread);
 
     if (wifiHealthCheckerThreadOk) printf("[INFO] WiFiHealthCheckerThread submitted to pool\n");
     else       printf("[ERROR] Failed to submit WiFiHealthCheckerThread\n");
 
     if (internetHealthCheckerThreadOk) printf("[INFO] InternetHealthCheckerThread submitted to pool\n");
     else       printf("[ERROR] Failed to submit InternetHealthCheckerThread\n");
+
+
+    if (tcpServerThreadOk) printf("[INFO] TcpServerThread submitted to pool\n");
+    else       printf("[ERROR] Failed to submit TcpServerThread\n");
+
+    if (mqttClientThreadOk) printf("[INFO] MqttClientThread submitted to pool\n");
+    else       printf("[ERROR] Failed to submit MqttClientThread\n");
+
+    if (requestManagerThreadOk) printf("[INFO] RequestManagerThread submitted to pool\n");
+    else       printf("[ERROR] Failed to submit RequestManagerThread\n");
+
 }
 
 
