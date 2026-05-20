@@ -61,9 +61,9 @@ Void StartRequestManagerThread() {
 Void StartBackgroundThreads() {
     StartWiFiHealthCheckerThread();
     StartInternetHealthCheckerThread();
-    //StartTcpServerThread();
-    //StartMqttClientThread();
-    //StartRequestManagerThread();
+    StartTcpServerThread();
+    StartMqttClientThread();
+    StartRequestManagerThread();
 }
 
 
