@@ -15,7 +15,7 @@ IWiFiManagerPtr wifiManager = Implementation<IWiFiManager>::type::GetInstance();
 
 extern "C" void app_main(void) {
     if (!wifiManager->Connect("Garfield", Optional<StdString>{"123Madhu$$"})) {
-        printf("[ERROR] Failed to connect to WiFi\n");
+        printf("[ERROR] hkhdsdsdssdsdsdsdsds to sdj to WiFi\n");
         return;
     }
     if (!wifiManager->WaitForConnection(10000) || !wifiManager->IsConnected()) {

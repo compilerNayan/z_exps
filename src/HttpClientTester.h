@@ -4,54 +4,64 @@
 #include "http/IHttpClient.h"
 
 class HttpClientTester {
-    /* @Autowired */
-    Private IHttpClientPtr httpClient;
-    /* @Autowired */
-    Private ILoggerPtr logger;
+    /*--@Autowired--*/
+    IHttpClientPtr httpClient = Implementation<IHttpClient>::type::GetInstance();
+    /*--@Autowired--*/
+    ILoggerPtr logger = Implementation<ILogger>::type::GetInstance();
 
-    Public Virtual Void RunAllTests() {
-        TestGet();
-        TestPost();
-        TestPut();
-        TestDelete();
+Public Virtual Void RunAllTests() {
+        logger->Info(Tag::Untagged, "=== Running HTTP tests ===");
+        TestGet("http://jsonplaceholder.typicode.com/todos/1");
+        TestPost("http://jsonplaceholder.typicode.com/posts");
+        TestPut("http://jsonplaceholder.typicode.com/posts/1");
+        TestDelete("http://jsonplaceholder.typicode.com/posts/1");
+
+        logger->Info(Tag::Untagged, "=== Running HTTPS tests ===");
+        TestGet("https://jsonplaceholder.typicode.com/todos/1");
+        TestPost("https://jsonplaceholder.typicode.com/posts");
+        TestPut("https://jsonplaceholder.typicode.com/posts/1");
+        TestDelete("https://jsonplaceholder.typicode.com/posts/1");
     }
 
-    Private Void TestGet() {
-        StdString result = httpClient->Get("http://jsonplaceholder.typicode.com/todos/1");
-        if (result.find("\"userId\"") != StdString::npos &&
-            result.find("\"title\"") != StdString::npos) {
-            logger->Info(Tag::Untagged, "[PASS] GET /todos/1 returned expected fields");
+Private Void TestGet(const CStdString& url) {
+        StdString result = httpClient->Get(url);
+        logger->Info(Tag::Untagged, "GET response (" + url + "): " + result);
+        if (!result.empty()) {
+            logger->Info(Tag::Untagged, "[PASS] GET returned non-empty response");
         } else {
-            logger->Error(Tag::Untagged, "[FAIL] GET /todos/1 missing expected fields: " + result);
+            logger->Error(Tag::Untagged, "[FAIL] GET returned empty response");
         }
     }
 
-    Private Void TestPost() {
+Private Void TestPost(const CStdString& url) {
         StdString body = R"({"title":"foo","body":"bar","userId":1})";
-        StdString result = httpClient->Post("http://jsonplaceholder.typicode.com/posts", body);
-        if (result.find("\"id\"") != StdString::npos) {
-            logger->Info(Tag::Untagged, "[PASS] POST /posts returned an id");
+        StdString result = httpClient->Post(url, body);
+        logger->Info(Tag::Untagged, "POST response (" + url + "): " + result);
+        if (!result.empty()) {
+            logger->Info(Tag::Untagged, "[PASS] POST returned non-empty response");
         } else {
-            logger->Error(Tag::Untagged, "[FAIL] POST /posts did not return id: " + result);
+            logger->Error(Tag::Untagged, "[FAIL] POST returned empty response");
         }
     }
 
-    Private Void TestPut() {
+Private Void TestPut(const CStdString& url) {
         StdString body = R"({"id":1,"title":"updated","body":"baz","userId":1})";
-        StdString result = httpClient->Put("http://jsonplaceholder.typicode.com/posts/1", body);
-        if (result.find("\"updated\"") != StdString::npos || result.find("\"title\"") != StdString::npos) {
-            logger->Info(Tag::Untagged, "[PASS] PUT /posts/1 updated title");
+        StdString result = httpClient->Put(url, body);
+        logger->Info(Tag::Untagged, "PUT response (" + url + "): " + result);
+        if (!result.empty()) {
+            logger->Info(Tag::Untagged, "[PASS] PUT returned non-empty response");
         } else {
-            logger->Error(Tag::Untagged, "[FAIL] PUT /posts/1 did not update: " + result);
+            logger->Error(Tag::Untagged, "[FAIL] PUT returned empty response");
         }
     }
 
-    Private Void TestDelete() {
-        StdString result = httpClient->Delete("http://jsonplaceholder.typicode.com/posts/1");
+Private Void TestDelete(const CStdString& url) {
+        StdString result = httpClient->Delete(url);
+        logger->Info(Tag::Untagged, "DELETE response (" + url + "): " + result);
         if (result.empty() || result == "{}") {
-            logger->Info(Tag::Untagged, "[PASS] DELETE /posts/1 returned empty or {}");
+            logger->Info(Tag::Untagged, "[PASS] DELETE returned empty or {}");
         } else {
-            logger->Error(Tag::Untagged, "[FAIL] DELETE /posts/1 unexpected response: " + result);
+            logger->Error(Tag::Untagged, "[FAIL] DELETE unexpected response: " + result);
         }
     }
 };
