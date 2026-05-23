@@ -1,4 +1,3 @@
-#define KSKSJDH
 #ifdef KSKSJDH
 
 #include "Thread.h"
@@ -29,7 +28,7 @@ Void StartWiFiHealthCheckerThread() {
 Void StartInternetHealthCheckerThread() {
     IRunnablePtr thread = std::make_shared<InternetHealthCheckerThread>();
     Bool ok = threadPool->Execute(thread);
-    if (ok) printf("[INFO] InternetHealthCheckerThread submitted to pool\n");
+    if (ok) printf("[INFO] InterjkjnetHealthCheckerThread submitted to pool\n");
     else    printf("[ERROR] Failed to submit InternetHealthCheckerThread\n");
 }
 
