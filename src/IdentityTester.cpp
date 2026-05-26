@@ -1,3 +1,4 @@
+#define IKSKSKHFHFH
 #ifdef IKSKSKHFHFH
 
 #include "service/IDeviceService.h"
@@ -6,7 +7,7 @@
 IDeviceServicePtr deviceService;
 
 extern "C" void app_main(void) {
-    printf("IdentityTester\n");
+    printf("IdentityTssester\n");
     deviceService->Refresh();
 }
 
