@@ -1,4 +1,3 @@
-#define JDJEJED
 #ifdef JDJEJED
 
 #include "HttpClientTester.h"
