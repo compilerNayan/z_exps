@@ -2,14 +2,14 @@
 #ifdef IKSKSKHFHFH
 
 #include "service/IDeviceService.h"
-
-#include "provider/IDeviceConfigProvider.h"
+#include "fleet/IFleetProvisioningService.h"
 
 /* @Autowired */
 IDeviceServicePtr deviceService;
 
+
 /* @Autowired */
-IDeviceConfigProviderPtr deviceConfigProvider;
+IFleetProvisioningServicePtr fleetProvisioningService;
 
 extern "C" void app_main(void) {
     printf("IdentityTssester\n");
