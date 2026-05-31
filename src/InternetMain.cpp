@@ -1,3 +1,4 @@
+#define KSKSJDH
 #ifdef KSKSJDH
 
 #include "Thread.h"

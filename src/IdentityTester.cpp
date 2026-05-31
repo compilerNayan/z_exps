@@ -1,4 +1,3 @@
-#define IKSKSKHFHFH
 #ifdef IKSKSKHFHFH
 
 #include "service/IDeviceService.h"
