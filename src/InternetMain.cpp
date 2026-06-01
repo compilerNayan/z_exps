@@ -11,6 +11,7 @@
 #include "TcpServerThread.h"
 #include "MqttClientThread.h"
 #include "RequestManagerThread.h"
+#include "DeviceManagerThread.h"
 
 
 /*--@Autowired--*/
@@ -57,6 +58,14 @@ Void StartRequestManagerThread() {
     else    printf("[ERROR] Failed to submit RequestManagerThread\n");
 }
 
+// Helper for DeviceManagerThread
+Void StartDeviceManagerThread() {
+    IRunnablePtr thread = std::make_shared<DeviceManagerThread>();
+    Bool ok = threadPool->Execute(thread);
+    if (ok) printf("[INFO] DeviceManagerThread submitted to pool\n");
+    else    printf("[ERROR] Failed to submit DeviceManagerThread\n");
+}
+
 // Main function now just orchestrates
 Void StartBackgroundThreads() {
     StartWiFiHealthCheckerThread();
@@ -64,6 +73,7 @@ Void StartBackgroundThreads() {
     StartTcpServerThread();
     StartMqttClientThread();
     StartRequestManagerThread();
+    StartDeviceManagerThread();
 }
 
 
